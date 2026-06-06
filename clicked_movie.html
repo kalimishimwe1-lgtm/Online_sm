@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoufHub — Movie Details</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #7c5cff;
+      --secondary: #ff6b6b;
+      --accent: #00caa8;
+      --dark: #0a0c15;
+      --card-bg: rgba(18, 22, 35, 0.85);
+      --text: #ffffff;
+      --text-muted: #a0a8c0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #05070f 0%, #0a0c15 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: rgba(10, 12, 21, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 30px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: var(--primary);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    .movie-detail {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 40px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .movie-poster {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .movie-info h1 {
+      font-size: 42px;
+      margin-bottom: 16px;
+    }
+
+    .movie-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      color: var(--text-muted);
+    }
+
+    .rating {
+      color: gold;
+    }
+
+    .overview {
+      line-height: 1.6;
+      margin-bottom: 30px;
+      color: var(--text-muted);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 40px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.1);
+    }
+
+    .cast-section, .similar-section {
+      margin-top: 60px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .cast-grid, .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+    }
+
+    .cast-card {
+      text-align: center;
+    }
+
+    .cast-img {
+      width: 100%;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    .cast-name {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .similar-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .similar-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .similar-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .similar-title {
+      padding: 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .movie-detail {
+        grid-template-columns: 1fr;
+      }
+      
+      .movie-info h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🎬 LoufHub</a>
+      <a href="movie.html" class="back-btn">← Back to Movies</a>
+    </div>
+  </nav>
+
+  <div class="container" id="movieDetail">
+    <div class="loading"><div class="loading-spinner"></div></div>
+  </div>
+
+  <script>
+    const TMDB_API_KEY = 'a265afc040fdf1f14350f04354bbc086';
+    const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+    const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/original';
+
+    const movieId = localStorage.getItem('selectedMovieId');
+
+    async function fetchMovieDetails() {
+      if (!movieId) {
+        window.location.href = 'movie.html';
+        return;
+      }
+
+      try {
+        const [detailRes, creditsRes, similarRes] = await Promise.all([
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`),
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`),
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${TMDB_API_KEY}`)
+        ]);
+
+        const movie = await detailRes.json();
+        const credits = await creditsRes.json();
+        const similar = await similarRes.json();
+
+        displayMovieDetails(movie, credits, similar);
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('movieDetail').innerHTML = '<div style="text-align:center;padding:40px;">Failed to load movie details</div>';
+      }
+    }
+
+    function displayMovieDetails(movie, credits, similar) {
+      const posterPath = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://via.placeholder.com/300x450?text=No+Poster';
+      const backdropPath = movie.backdrop_path ? BACKDROP_BASE_URL + movie.backdrop_path : '';
+      
+      const cast = credits.cast ? credits.cast.slice(0, 8) : [];
+      const similarMovies = similar.results ? similar.results.slice(0, 6) : [];
+
+      const html = `
+        <div class="movie-detail">
+          <div>
+            <img src="${posterPath}" alt="${movie.title}" class="movie-poster">
+          </div>
+          <div class="movie-info">
+            <h1>${movie.title}</h1>
+            <div class="movie-meta">
+              <span>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
+              <span>⭐ <span class="rating">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10</span></span>
+              <span>⏱ ${movie.runtime || 'N/A'} min</span>
+              <span>${movie.status || 'N/A'}</span>
+            </div>
+            <div class="overview">${movie.overview || 'No overview available.'}</div>
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="watchMovie()">▶ Watch Now</button>
+              <button class="btn btn-secondary" onclick="watchTrailer()">🎬 Watch Trailer</button>
+              <button class="btn btn-secondary" onclick="downloadMovie()">⬇ Download</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cast-section">
+          <h2 class="section-title">🎭 Top Cast</h2>
+          <div class="cast-grid">
+            ${cast.map(actor => `
+              <div class="cast-card">
+                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/150x150?text=No+Image'}" class="cast-img">
+                <div class="cast-name">${actor.name}</div>
+                <div style="font-size:11px;color:var(--text-muted)">${actor.character}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        <div class="similar-section">
+          <h2 class="section-title">🎬 You May Also Like</h2>
+          <div class="similar-grid">
+            ${similarMovies.map(sim => `
+              <div class="similar-card" onclick="goToMovie(${sim.id})">
+                <img src="${sim.poster_path ? IMAGE_BASE_URL + sim.poster_path : 'https://via.placeholder.com/200x300?text=No+Image'}" class="similar-img">
+                <div class="similar-title">${sim.title}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('movieDetail').innerHTML = html;
+    }
+
+    function watchMovie() {
+      alert('🎬 Streaming will start shortly...');
+    }
+
+    function watchTrailer() {
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(document.querySelector('h1').innerText + ' trailer')}`, '_blank');
+    }
+
+    function downloadMovie() {
+      alert('⬇ Download will start once the movie is ready!');
+    }
+
+    function goToMovie(id) {
+      localStorage.setItem('selectedMovieId', id);
+      window.location.reload();
+    }
+
+    fetchMovieDetails();
+  </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+Create a premium entertainment platform called "LoufHub" with Gold/Yellow/Black theme that integrates 4 major APIs (TMDB, YouTube, TheSportsDB, iTunes) to deliver movies, music, sports content, and AI assistance.
+
+📋 PROJECT REQUIREMENTS
+1. COLOR SCHEME
+Primary Colors: Gold (#FFD700), Yellow (#FFE44D), Dark Gold (#DAA520)
+
+Background Colors: Black Deep (#0a0a0a), Black Dark (#111111), Black Soft (#1a1a1a)
+
+Text Colors: White (#ffffff), Gray (#cccccc), Light Gray (#a0a8c0)
+
+2. CSS FEATURES TO IMPLEMENT
+display: flex and display: grid for layouts
+
+gap property for consistent spacing
+
+justify-content and align-items for alignment
+
+box-sizing: border-box for predictable sizing
+
+border-radius for softened corners
+
+box-shadow for depth effects
+
+backdrop-filter: blur() for glass-morphism
+
+CSS animations and keyframes
+
+CSS transitions for interactive elements
+
+CSS transforms (scale, translate, rotate)
+
+Media queries for responsiveness
+
+Custom scrollbar styling
+
+CSS variables for theming
+
+🗂️ FILE STRUCTURE
+text
+loufhub-project/
+├── server.js                 # Backend server with all API routes
+├── package.json              # Dependencies
+├── .env                      # API keys configuration
+├── index.html               # Homepage with AI Smart Box
+├── movie.html               # Movies page with slideshow & search
+├── music.html               # Music page with genre tabs
+├── sport.html               # Sports page with live scores
+├── ai.html                  # AI Chat Assistant
+├── login.html               # Login page
+├── register.html            # Registration page
+├── clicked_movie.html       # Movie details page
+├── clicked_music.html       # Music details page
+└── uploads/                 # Folder for uploaded files (auto-created)
+🔑 API INTEGRATIONS
+API 1: TMDB (The Movie Database)
+API Key: a265afc040fdf1f14350f04354bbc086
+
+Endpoints to implement:
+
+Popular movies (/movie/popular)
+
+Search movies (/search/movie)
+
+Movie details (/movie/{id})
+
+Now playing (/movie/now_playing)
+
+Upcoming movies (/movie/upcoming)
+
+Top rated (/movie/top_rated)
+
+Recommendations (/movie/{id}/recommendations)
+
+API 2: YouTube Data API v3
+API Key: AIzaSyB5ijZsvQi2mv1Y43BPDR3P6v4plgk2Uhg
+
+Endpoints to implement:
+
+Search movie trailers (/search?q={movieTitle}+trailer)
+
+Search music videos (/search?q={songName}+official+video)
+
+Sports highlights (/search?q={match}+highlights)
+
+API 3: TheSportsDB
+API Key: 8391dabe3ea84cab9a412cec43b2148d
+
+Endpoints to implement:
+
+All leagues (/all_leagues.php)
+
+League details (/lookupleague.php?id={id})
+
+Live scores/events (/eventsround.php?id={leagueId})
+
+Team details (/lookupteam.php?id={teamId})
+
+Standings table (/lookuptable.php?l={leagueId})
+
+API 4: iTunes Search API
+API Key: None required (public API)
+
+Endpoints to implement:
+
+Search songs (/search?term={query}&entity=song)
+
+Search albums (/search?term={query}&entity=album)
+
+Top songs by genre (/search?term={genre}+songs)
+
+Lookup by ID (/lookup?id={id})
+
+📄 PAGE REQUIREMENTS
+1. index.html (Homepage)
+Features:
+
+Hero section with animated gradient text
+
+4 category cards (Movies, Music, Sports, AI Studio)
+
+AI Smart Box with:
+
+Input field for user questions
+
+AI response area
+
+Quick suggestion chips
+
+Animated border effect
+
+Statistics counters (Movies, Songs, Leagues, Users)
+
+Trending section with popular content
+
+Newsletter subscription form
+
+Footer with links
+
+2. movie.html (Movies Page)
+Features:
+
+Image slideshow/carousel (auto-playing)
+
+Search bar for movie search
+
+Movie grid displaying posters
+
+Each movie card has: poster, title, year, rating
+
+Watch/Trailer/Download buttons on each card
+
+Clicking card opens clicked_movie.html
+
+Load More button for pagination
+
+Genre filters (Action, Comedy, Drama, Sci-Fi)
+
+3. music.html (Music Page)
+Features:
+
+Genre tabs (Popular, Amapiano, Hip Hop, R&B, Rock, Electronic, Jazz, Country)
+
+Music grid with album artwork
+
+Each track has: artwork, song title, artist name
+
+Play button for audio preview
+
+Audio player modal
+
+Download button for each track
+
+Click card opens clicked_music.html
+
+Load More button for more tracks
+
+4. sport.html (Sports Page)
+Features:
+
+Live scores section with auto-refresh (30 seconds)
+
+League selector dropdown (20+ leagues)
+
+Match cards showing: home team, away team, scores, status
+
+Live badge animation for live matches
+
+League standings table (top 20 teams)
+
+Columns: Position, Team, MP, W, D, L, GF, GA, GD, Pts, Form
+
+Top scorers section
+
+Load More button for matches
+
+5. ai.html (AI Assistant Page)
+Features:
+
+Chat interface with message bubbles
+
+User messages (right side, gold gradient)
+
+AI messages (left side, glass effect)
+
+Typing indicator animation
+
+Quick suggestion buttons
+
+Contextual responses for movies, music, sports
+
+Smooth scroll to latest message
+
+6. login.html (Login Page)
+Features:
+
+Email and password fields
+
+Gold-themed form styling
+
+Loading state on submit
+
+Error/Success messages
+
+Link to registration page
+
+Glass-morphism card effect
+
+7. register.html (Registration Page)
+Features:
+
+Name, email, password, confirm password fields
+
+Password strength indicator (Weak/Medium/Strong)
+
+Real-time password validation
+
+Terms agreement checkbox
+
+Link to login page
+
+8. clicked_movie.html (Movie Details)
+Features:
+
+Hero image backdrop
+
+Movie poster, title, tagline, overview
+
+Release date, runtime, genres, rating
+
+Cast grid with actor photos
+
+Similar movies carousel
+
+Watch/Download buttons
+
+Trailer button (opens YouTube)
+
+9. clicked_music.html (Music Details)
+Features:
+
+Album artwork
+
+Track list with duration
+
+Artist information
+
+Related songs
+
+Audio preview player
+
+Download options
+
+🔧 BACKEND API ENDPOINTS (server.js)
+Movie Routes
+text
+GET /api/movies/popular?page=1
+GET /api/movies/search?q={query}
+GET /api/movie/{id}
+GET /api/movies/now-playing
+GET /api/movies/upcoming
+GET /api/movies/top-rated
+GET /api/movie/trailer/{movieTitle}
+GET /api/movie/{id}/recommendations
+Music Routes
+text
+GET /api/music/search?term={query}&entity=song
+GET /api/music/top-songs?genre={genre}
+GET /api/music/top-albums
+GET /api/music/album/{id}
+GET /api/music/artist/{id}
+Sports Routes
+text
+GET /api/sports/leagues
+GET /api/sports/league/{id}
+GET /api/sports/livescores?leagueId={id}
+GET /api/sports/standings/{leagueId}
+GET /api/sports/team/{id}
+GET /api/sports/events/{teamId}
+Upload Route
+text
+POST /upload (multipart/form-data with file and category)
+🎨 CSS REQUIREMENTS
+Must Include:
+CSS Variables for theming
+
+CSS Grid for layouts
+
+CSS Flexbox for alignment
+
+CSS Animations (@keyframes)
+
+CSS Transitions
+
+CSS Transforms (2D & 3D)
+
+CSS Pseudo-classes (:hover, :focus, :nth-child)
+
+CSS Pseudo-elements (::before, ::after)
+
+CSS Media Queries for responsiveness
+
+CSS Box Model properties
+
+CSS Gradients (linear and radial)
+
+CSS Box Shadow
+
+CSS Backdrop Filter (glass-morphism)
+
+CSS Custom Scrollbar
+
+CSS Selection styling
+
+📱 RESPONSIVE BREAKPOINTS
+Desktop: > 1200px
+
+Tablet: 768px - 1199px
+
+Mobile: < 768px
+
+⚡ INTERACTIVE FEATURES
+Movie Slideshow: Auto-play with manual navigation dots
+
+Live Score Updates: Auto-refresh every 30 seconds
+
+AI Chat: Real-time response generation
+
+Search: Instant filtering results
+
+Load More: Pagination for all content types
+
+Password Strength: Real-time validation
+
+Modal Popups: For audio player and confirmations
+
+Hover Effects: Scale, translate, color changes
+
+Form Validation: Client-side validation
+
+🚀 INSTALLATION & RUNNING
+bash
+# Step 1: Install dependencies
+npm install
+
+# Step 2: Create .env file with API keys
+echo "TMDB_API_KEY=a265afc040fdf1f14350f04354bbc086" > .env
+echo "YOUTUBE_API_KEY=AIzaSyB5ijZsvQi2mv1Y43BPDR3P6v4plgk2Uhg" >> .env
+echo "SPORTSDB_API_KEY=8391dabe3ea84cab9a412cec43b2148d" >> .env
+echo "PORT=3000" >> .env
+
+# Step 3: Start the server
+npm start
+
+# Step 4: Open browser
+# Visit http://localhost:3000
+✅ DELIVERABLES CHECKLIST
+index.html (Homepage with AI Smart Box)
+
+movie.html (Movies page with slideshow & search)
+
+music.html (Music page with genre tabs)
+
+sport.html (Sports page with live scores)
+
+ai.html (AI Chat Assistant)
+
+login.html (Login page)
+
+register.html (Registration page)
+
+clicked_movie.html (Movie details)
+
+clicked_music.html (Music details)
+
+server.js (Backend with all API routes)
+
+package.json (Dependencies)
+
+.env (API keys configuration)
+
+All CSS features implemented
+
+Responsive design working
+
+All APIs integrated and functional
+
+Gold/Yellow/Black theme applied
+
+Load More buttons working
+
+Search functionality working
+
+🎯 SUCCESS CRITERIA
+All 4 APIs successfully return data
+
+Gold theme is consistent across all pages
+
+Mobile responsive (works on phone, tablet, desktop)
+
+All interactive features work (search, load more, play, download)
+
+Live scores auto-refresh every 30 seconds
+
+AI chat responds contextually
+
+No console errors
+
+Smooth animations and transitions
+
+Glass-morphism effect visible
+
+Load More button loads additional content
+
+📝 NOTES FOR DEVELOPER
+Use the provided API keys exactly as given
+
+Implement error handling for API failures
+
+Show loading spinners during data fetch
+
+Use mock data as fallback if APIs fail
+
+Follow gold/yellow/black color scheme strictly
+
+Ensure all CSS properties mentioned are used
+
+Make sure responsive design works on all devices
+
+Add proper meta tags for mobile viewport
+
+Test all links and buttons before final delivery
+
+This prompt contains all requirements for building the complete LoufHub project. Follow each section carefully to deliver a fully functional, premium entertainment platform.
+

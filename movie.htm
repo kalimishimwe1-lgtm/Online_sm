@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies - LoufHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #FFD700; --yellow: #FFE44D; --dark-gold: #DAA520;
+            --black-deep: #050505; --black-dark: #0c0c0c; --black-soft: #141414;
+            --white: #ffffff; --gray: #cccccc; --light-gray: #8a8a8a;
+            --gold-gradient: linear-gradient(135deg, #FFD700, #DAA520, #FFE44D);
+            --glass-bg: rgba(20, 20, 20, 0.8); --glass-border: rgba(255, 215, 0, 0.1);
+            --gold-shadow: 0 8px 30px rgba(255, 215, 0, 0.25);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ::selection { background: var(--gold); color: var(--black-deep); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--black-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--dark-gold); border-radius: 8px; }
+        body { font-family: 'Inter', sans-serif; background: var(--black-deep); color: var(--white); overflow-x: hidden; }
+
+        /* CINEMATIC NAVBAR */
+        .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(5,5,5,0.9), transparent); transition: all 0.4s; }
+        .navbar.scrolled { padding: 15px 60px; background: rgba(5,5,5,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
+        .logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; letter-spacing: -1px; }
+        .logo span { -webkit-text-fill-color: var(--white); font-weight: 300; }
+        .nav-links { display: flex; gap: 40px; align-items: center; list-style: none; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; position: relative; }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -8px; left: 0; right: 0; height: 2px; background: var(--gold); }
+        .nav-btn { padding: 12px 28px; background: transparent; color: var(--gold); border: 1px solid var(--gold); border-radius: 30px; font-weight: 700; font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-btn:hover { background: var(--gold); color: var(--black-deep); box-shadow: var(--gold-shadow); }
+        .mobile-toggle { display: none; background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer; }
+
+        /* CINEMATIC SLIDESHOW */
+        .slideshow { position: relative; height: 90vh; margin-top: 0; overflow: hidden; background: var(--black-deep); }
+        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease-in-out; }
+        .slide.active { opacity: 1; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+        .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--black-deep) 5%, rgba(5,5,5,0.2) 50%, rgba(5,5,5,0.4) 100%); display: flex; align-items: flex-end; padding: 100px; }
+        .slide-content { max-width: 700px; transform: translateY(20px); opacity: 0; animation: slideUp 0.8s ease forwards; }
+        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
+        .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 64px; font-weight: 900; line-height: 1; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+        .slide-content p { color: var(--gray); margin-bottom: 30px; font-size: 16px; line-height: 1.6; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
+        .slide-btn { padding: 16px 40px; background: var(--gold-gradient); color: var(--black-deep); border: none; border-radius: 50px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; box-shadow: var(--gold-shadow); }
+        .slide-btn:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(255,215,0,0.4); }
+        .slide-dots { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; }
+        .slide-dot { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.4s; border: none; }
+        .slide-dot.active { background: var(--gold); width: 60px; }
+
+        /* MAIN CONTENT */
+        .main-content { padding: 80px 60px; max-width: 1600px; margin: 0 auto; position: relative; z-index: 2; }
+        
+        .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; }
+        .section-head h2 { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 800; }
+        .section-head h2 span { color: var(--gold); }
+
+        .search-bar { display: flex; gap: 0; max-width: 500px; }
+        .search-bar input { flex: 1; padding: 16px 24px; background: var(--black-soft); border: 1px solid var(--glass-border); border-right: none; border-radius: 12px 0 0 12px; color: var(--white); font-size: 14px; outline: none; transition: border-color 0.3s; }
+        .search-bar input:focus { border-color: var(--gold); }
+        .search-bar button { padding: 16px 30px; background: var(--gold-gradient); color: var(--black-deep); border: none; border-radius: 0 12px 12px 0; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .search-bar button:hover { filter: brightness(1.1); }
+
+        .genre-filters { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 40px; }
+        .genre-btn { padding: 10px 24px; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: var(--gray); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .genre-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .genre-btn.active { background: var(--gold); color: var(--black-deep); border-color: var(--gold); box-shadow: var(--gold-shadow); }
+
+        /* PREMIUM MOVIE GRID */
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; }
+        .movie-card { background: var(--black-soft); border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1px solid transparent; position: relative; }
+        .movie-card:hover { transform: translateY(-15px); border-color: rgba(255,215,0,0.4); box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(255,215,0,0.1); }
+        .movie-poster { position: relative; aspect-ratio: 2/3; overflow: hidden; }
+        .movie-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, filter 0.6s ease; }
+        .movie-card:hover .movie-poster img { transform: scale(1.1); filter: brightness(0.7); }
+        .movie-rating { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--gold); border: 1px solid rgba(255,215,0,0.2); display: flex; align-items: center; gap: 4px; }
+        .movie-actions { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px); transition: all 0.4s; }
+        .movie-card:hover .movie-actions { opacity: 1; transform: translateY(0); }
+        .action-row { display: flex; gap: 8px; }
+        .movie-actions button { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-watch { background: var(--gold); color: var(--black-deep); }
+        .btn-trailer { background: rgba(255,255,255,0.15); color: var(--white); backdrop-filter: blur(5px); }
+        .btn-download { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3) !important; }
+        .movie-info { padding: 20px; }
+        .movie-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-info span { font-size: 12px; color: var(--light-gray); font-weight: 500; }
+
+        .load-more { text-align: center; margin-top: 60px; }
+        .load-more button { padding: 16px 50px; background: transparent; border: 2px solid rgba(255,255,255,0.1); color: var(--white); border-radius: 50px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+        .load-more button:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.1); }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--black-soft); border-radius: 20px; padding: 20px; max-width: 900px; width: 90%; position: relative; border: 1px solid var(--glass-border); }
+        .modal-close { position: absolute; top: -50px; right: 0; background: none; border: none; color: var(--white); font-size: 28px; cursor: pointer; transition: color 0.3s; }
+        .modal-close:hover { color: var(--gold); }
+        .modal-content iframe { width: 100%; aspect-ratio: 16/9; border-radius: 12px; border: none; }
+
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,215,0,0.1); border-top: 3px solid var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 40px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 1199px) { .main-content { padding: 60px 40px; } }
+        @media (max-width: 767px) {
+            .navbar { padding: 15px 20px; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,5,5,0.98); flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 1001;}
+            .nav-links.active { display: flex; }
+            .mobile-toggle { display: block; z-index: 1002; }
+            .slideshow { height: 70vh; }
+            .slide-overlay { padding: 40px; }
+            .slide-content h2 { font-size: 36px; }
+            .main-content { padding: 40px 20px; }
+            .movie-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .section-head { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .search-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">Louf<span>Hub</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="movie.html" class="active">Movies</a></li>
+            <li><a href="music.html">Music</a></li>
+            <li><a href="sport.html">Sports</a></li>
+            <li><a href="ai.html">AI Studio</a></li>
+            <li><a href="login.html" class="nav-btn">Sign In</a></li>
+        </ul>
+        <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <div class="slideshow" id="slideshow">
+        <div class="spinner"></div>
+        <div class="slide-dots" id="slideDots"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="section-head">
+            <h2>Discover <span>Movies</span></h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search movies...">
+                <button onclick="searchMovies()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="genre-filters" id="genreFilters">
+            <button class="genre-btn active" data-endpoint="/api/movies/popular">Popular</button>
+            <button class="genre-btn" data-endpoint="/api/movies/now-playing">Now Playing</button>
+            <button class="genre-btn" data-endpoint="/api/movies/upcoming">Upcoming</button>
+            <button class="genre-btn" data-endpoint="/api/movies/top-rated">Top Rated</button>
+        </div>
+
+        <div class="movie-grid" id="movieGrid"></div>
+
+        <div class="load-more">
+            <button id="loadMoreBtn" onclick="loadMore()">Load More</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="trailerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <iframe id="trailerFrame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentEndpoint = '/api/movies/popular';
+        let currentSearch = '';
+        let slideshowInterval;
+
+        window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 100); });
+        document.getElementById('mobileToggle').addEventListener('click', () => { document.getElementById('navLinks').classList.toggle('active'); });
+
+        document.querySelectorAll('.genre-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentEndpoint = btn.dataset.endpoint;
+                currentSearch = '';
+                document.getElementById('searchInput').value = '';
+                currentPage = 1;
+                loadMovies(true);
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchMovies(); });
+        function searchMovies() { currentSearch = document.getElementById('searchInput').value.trim(); currentPage = 1; loadMovies(true); }
+
+        async function loadMovies(reset = false) {
+            const grid = document.getElementById('movieGrid');
+            if (reset) grid.innerHTML = '<div class="spinner"></div>';
+            try {
+                let url = currentSearch ? `/api/movies/search?q=${encodeURIComponent(currentSearch)}&page=${currentPage}` : `${currentEndpoint}?page=${currentPage}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                if (reset) grid.innerHTML = '';
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(movie => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+                        card.innerHTML = `
+                            <div class="movie-poster">
+                                <img src="${movie.poster_path ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path : 'https://via.placeholder.com/300x450/141414/FFD700?text=No+Image'}" alt="${movie.title}" loading="lazy">
+                                <div class="movie-rating"><i class="fas fa-star"></i> ${movie.vote_average?.toFixed(1)}</div>
+                                <div class="movie-actions">
+                                    <div class="action-row">
+                                        <button class="btn-watch" onclick="event.stopPropagation(); window.location.href='clicked_movie.html?id=${movie.id}'">Watch Now</button>
+                                        <button class="btn-trailer" onclick="event.stopPropagation(); openTrailer('${movie.title.replace(/'/g, "\\'")}')">Trailer</button>
+                                    </div>
+                                    <button class="btn-download" style="width:100%" onclick="event.stopPropagation(); alert('Download starting...')">Download</button>
+                                </div>
+                            </div>
+                            <div class="movie-info">
+                                <h4>${movie.title}</h4>
+                                <span>${movie.release_date?.split('-')[0] || 'N/A'}</span>
+                            </div>
+                        `;
+                        card.addEventListener('click', () => window.location.href = `clicked_movie.html?id=${movie.id}`);
+                        grid.appendChild(card);
+                    });
+                } else if (reset) { grid.innerHTML = '<p style="color: var(--light-gray); text-align:center; grid-column:1/-1;">No movies found.</p>'; }
+            } catch (err) { if (reset) grid.innerHTML = '<p style="color: var(--light-gray); text-align:center; grid-column:1/-1;">Error loading movies.</p>'; }
+        }
+
+        function loadMore() { currentPage++; loadMovies(false); }
+
+        async function loadSlideshow() {
+            try {
+                const res = await fetch('/api/movies/now-playing?page=1');
+                const data = await res.json();
+                const slideshow = document.getElementById('slideshow');
+                const dotsContainer = document.getElementById('slideDots');
+                slideshow.innerHTML = ''; dotsContainer.innerHTML = '';
+                const movies = data.results.slice(0, 5);
+                movies.forEach((movie, i) => {
+                    const slide = document.createElement('div');
+                    slide.className = `slide ${i === 0 ? 'active' : ''}`;
+                    slide.innerHTML = `
+                        <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
+                        <div class="slide-overlay">
+                            <div class="slide-content">
+                                <h2>${movie.title}</h2>
+                                <p>${movie.overview?.substring(0, 150)}...</p>
+                                <a href="clicked_movie.html?id=${movie.id}" class="slide-btn">Watch Now <i class="fas fa-play" style="margin-left:8px"></i></a>
+                            </div>
+                        </div>
+                    `;
+                    slideshow.appendChild(slide);
+                    const dot = document.createElement('button');
+                    dot.className = `slide-dot ${i === 0 ? 'active' : ''}`;
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dotsContainer.appendChild(dot);
+                });
+                let currentSlide = 0;
+                function goToSlide(index) {
+                    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+                    document.querySelectorAll('.slide-dot').forEach(d => d.classList.remove('active'));
+                    document.querySelectorAll('.slide')[index]?.classList.add('active');
+                    document.querySelectorAll('.slide-dot')[index]?.classList.add('active');
+                    currentSlide = index;
+                }
+                clearInterval(slideshowInterval);
+                slideshowInterval = setInterval(() => { currentSlide = (currentSlide + 1) % movies.length; goToSlide(currentSlide); }, 6000);
+            } catch (err) { document.getElementById('slideshow').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--light-gray);">Unable to load slideshow</div>'; }
+        }
+
+        async function openTrailer(title) {
+            try {
+                const res = await fetch(`/api/movie/trailer/${encodeURIComponent(title)}`);
+                const data = await res.json();
+                if (data.items && data.items.length > 0) {
+                    document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1`;
+                    document.getElementById('trailerModal').classList.add('active');
+                } else { alert('Trailer not available'); }
+            } catch (err) { alert('Error loading trailer'); }
+        }
+
+        function closeModal() { document.getElementById('trailerFrame').src = ''; document.getElementById('trailerModal').classList.remove('active'); }
+        document.getElementById('trailerModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+
+        loadSlideshow();
+        loadMovies(true);
+    </script>
+</body>
+</html>

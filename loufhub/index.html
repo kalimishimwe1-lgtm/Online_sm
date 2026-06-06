@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoufHub - Premium Entertainment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --yellow: #FFE44D;
+            --dark-gold: #DAA520;
+            --black-deep: #0a0a0a;
+            --black-dark: #111111;
+            --black-soft: #1a1a1a;
+            --white: #ffffff;
+            --gray: #cccccc;
+            --light-gray: #a0a8c0;
+            --gold-gradient: linear-gradient(135deg, #FFD700, #DAA520, #FFE44D);
+            --glass-bg: rgba(26, 26, 26, 0.7);
+            --glass-border: rgba(255, 215, 0, 0.15);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --gold-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::selection {
+            background: var(--gold);
+            color: var(--black-deep);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--black-deep);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-gold);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black-deep);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.85);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 10px 40px;
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            -webkit-text-fill-color: var(--white);
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            background: var(--gold-gradient);
+            color: var(--black-deep);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--gold-shadow);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 40px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(218, 165, 32, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(5deg) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(40px, 7vw, 80px);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, var(--gold), var(--yellow), var(--dark-gold), var(--gold));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--light-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .btn-primary {
+            padding: 16px 36px;
+            background: var(--gold-gradient);
+            color: var(--black-deep);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--gold-shadow);
+        }
+
+        .btn-secondary {
+            padding: 16px 36px;
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== CATEGORY CARDS ========== */
+        .categories {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 800;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .category-card {
+            position: relative;
+            padding: 40px 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gold-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.1);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .category-icon.movies { color: #ff6b6b; }
+        .category-icon.music { color: #a29bfe; }
+        .category-icon.sports { color: #55efc4; }
+        .category-icon.ai { color: var(--gold); }
+
+        .category-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .category-card p {
+            color: var(--light-gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .category-arrow {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            color: var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-arrow {
+            background: var(--gold);
+            color: var(--black-deep);
+            transform: translateX(4px);
+        }
+
+        /* ========== AI SMART BOX ========== */
+        .ai-section {
+            padding: 80px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .smart-box {
+            position: relative;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .smart-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(from 0deg, var(--gold), transparent, var(--dark-gold), transparent, var(--gold));
+            border-radius: 26px;
+            z-index: -1;
+            animation: borderRotate 4s linear infinite;
+        }
+
+        .smart-box::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--black-soft);
+            border-radius: 22px;
+            z-index: -1;
+        }
+
+        @keyframes borderRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .smart-box-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .smart-box-header i {
+            font-size: 24px;
+            color: var(--gold);
+        }
+
+        .smart-box-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .ai-input:focus {
+            border-color: var(--gold);
+        }
+
+        .ai-input::placeholder {
+            color: var(--light-gray);
+        }
+
+        .ai-send-btn {
+            padding: 16px 24px;
+            background: var(--gold-gradient);
+            color: var(--black-deep);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--gold-shadow);
+        }
+
+        .ai-response {
+            min-height: 60px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .ai-response.typing::after {
+            content: '...';
+            animation: dots 1.5s steps(3) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50px;
+            font-size: 13px;
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chip:hover {
+            background: var(--gold);
+            color: var(--black-deep);
+            transform: translateY(-2px);
+        }
+
+        /* ========== STATS SECTION ========== */
+        .stats {
+            padding: 60px 40px;
+            background: var(--black-dark);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 30px 20px;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--light-gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ========== TRENDING SECTION ========== */
+        .trending {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .trending-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            aspect-ratio: 2/3;
+        }
+
+        .trending-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.15);
+        }
+
+        .trending-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .trending-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 16px 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+
+        .trending-overlay h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .trending-overlay span {
+            font-size: 12px;
+            color: var(--gold);
+        }
+
+        /* ========== NEWSLETTER ========== */
+        .newsletter {
+            padding: 80px 40px;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .newsletter p {
+            color: var(--light-gray);
+            margin-bottom: 24px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--gold);
+        }
+
+        .newsletter-form button {
+            padding: 14px 28px;
+            background: var(--gold-gradient);
+            color: var(--black-deep);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--gold-shadow);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            padding: 60px 40px 30px;
+            background: var(--black-dark);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+
+        .footer-col h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--light-gray);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 0;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--gold);
+            transform: translateX(4px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            color: var(--light-gray);
+            font-size: 13px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ========== LOADING SPINNER ========== */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 215, 0, 0.1);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1199px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .navbar {
+                padding: 12px 20px;
+            }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(10, 10, 10, 0.98);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-toggle {
+                display: block;
+                z-index: 1001;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .categories, .trending, .ai-section {
+                padding: 60px 20px;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-input-wrapper {
+                flex-direction: column;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">Louf<span>Hub</span></a>
+        
+            <li><a href="login.html" class="nav-btn">Sign In</a></li>
+        </ul>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">✨ Premium Entertainment Platform</div>
+            <h1 class="hero-title">
+                Your Ultimate<br>
+                <span class="gradient-text">Entertainment Hub</span>
+            </h1>
+            <p class="hero-subtitle">
+                Movies, Music, Sports & AI — All in one place. Discover, stream, and explore unlimited content with LoufHub.
+            </p>
+            
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories">
+        <div class="section-header">
+            <div class="section-label">Categories</div>
+            <h2 class="section-title">Explore By Category</h2>
+        </div>
+        <div class="category-grid">
+            <a href="movie.html" class="category-card">
+                <div class="category-icon movies"><i class="fas fa-film"></i></div>
+                <h3>Movies</h3>
+                <p>Discover the latest blockbusters, timeless classics, and trending films from around the world.</p>
+                <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <a href="music.html" class="category-card">
+                <div class="category-icon music"><i class="fas fa-music"></i></div>
+                <h3>Music</h3>
+                <p>Stream millions of tracks, explore new genres, and discover your next favorite artist.</p>
+                <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <a href="sport.html" class="category-card">
+                <div class="category-icon sports"><i class="fas fa-futbol"></i></div>
+                <h3>Sports</h3>
+                <p>Live scores, standings, highlights, and everything you need for your favorite leagues.</p>
+                <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <a href="ai.html" class="category-card">
+                <div class="category-icon ai"><i class="fas fa-brain"></i></div>
+                <h3>AI Studio</h3>
+                <p>Your personal AI assistant for recommendations, insights, and entertainment discovery.</p>
+                <div class="category-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- AI SMART BOX -->
+    <section class="ai-section">
+        <div class="smart-box">
+            <div class="smart-box-header">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                
+            </div>
+            <div class="ai-response" id="aiResponse">
+                👋 Hello! I'm your LoufHub AI assistant. Ask me about movies, music, sports, or anything entertainment-related!
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" data-target="50000">0</div>
+                <div class="stat-label">Movies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="1000000">0</div>
+                <div class="stat-label">Songs</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="200">0</div>
+                <div class="stat-label">Leagues</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="2500000">0</div>
+                <div class="stat-label">Users</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRENDING -->
+    <section class="trending">
+        <div class="section-header">
+            <div class="section-label">Trending Now</div>
+            <h2 class="section-title">Popular This Week</h2>
+        </div>
+        <div class="trending-grid" id="trendingGrid">
+            <div class="spinner"></div>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+        <h3>Stay in the Loop</h3>
+        <p>Subscribe to get the latest entertainment news and updates.</p>
+        <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+        </form>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>LoufHub</h4>
+                <a href="index.html">Home</a>
+                <a href="movie.html">Movies</a>
+                <a href="music.html">Music</a>
+                <a href="sport.html">Sports</a>
+                <a href="ai.html">AI Studio</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="login.html">Sign In</a>
+                <a href="register.html">Register</a>
+                <a href="#">Profile</a>
+                <a href="#">Settings</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">FAQ</a>
+                <a href="#">Feedback</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">DMCA</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 LoufHub. All rights reserved. Made with <span style="color: var(--gold);">♥</span> for entertainment lovers.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // AI Smart Box
+        const aiInput = document.getElementById('aiInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiResponse = document.getElementById('aiResponse');
+
+        const aiResponses = {
+            'movie': '🎬 Great taste in movies! I recommend checking out our Movies section for the latest blockbusters and hidden gems. Try searching for specific genres like action, comedy, or sci-fi!',
+            'music': '🎵 Music lover? Explore our Music section with millions of tracks across all genres. From Amapiano to Rock, we\'ve got you covered!',
+            'sport': '⚽ Sports fan! Check out our Sports section for live scores, standings, and highlights from 200+ leagues worldwide.',
+            'trending': '🔥 Right now trending: New movie releases, hit singles, and exciting Premier League action! Explore each section for details.',
+            'default': '🤔 I can help you with movies, music, sports, and entertainment recommendations! Try asking about a specific genre, league, or artist.'
+        };
+
+        function getAIResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('movie') || q.includes('film') || q.includes('watch') || q.includes('action') || q.includes('comedy') || q.includes('drama')) return aiResponses.movie;
+            if (q.includes('music') || q.includes('song') || q.includes('hip hop') || q.includes('rock') || q.includes('amapiano')) return aiResponses.music;
+            if (q.includes('sport') || q.includes('league') || q.includes('premier') || q.includes('score') || q.includes('football')) return aiResponses.sport;
+            if (q.includes('trending') || q.includes('popular') || q.includes('best')) return aiResponses.trending;
+            return aiResponses.default;
+        }
+
+        function sendAIMessage() {
+            const query = aiInput.value.trim();
+            if (!query) return;
+
+            aiResponse.className = 'ai-response typing';
+            aiResponse.textContent = 'Thinking';
+
+            setTimeout(() => {
+                aiResponse.className = 'ai-response';
+                aiResponse.textContent = getAIResponse(query);
+                aiInput.value = '';
+            }, 1500);
+        }
+
+        aiSendBtn.addEventListener('click', sendAIMessage);
+        aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAIMessage();
+        });
+
+        // Suggestion chips
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                aiInput.value = chip.dataset.q;
+                sendAIMessage();
+            });
+        });
+
+        // Stats counter animation
+        function animateCounters() {
+            document.querySelectorAll('.stat-number').forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    if (target >= 1000000) {
+                        counter.textContent = (current / 1000000).toFixed(1) + 'M+';
+                    } else if (target >= 1000) {
+                        counter.textContent = Math.floor(current / 1000) + 'K+';
+                    } else {
+                        counter.textContent = Math.floor(current) + '+';
+                    }
+                }, 16);
+            });
+        }
+
+        // Intersection Observer for counter animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statsObserver.observe(document.querySelector('.stats'));
+
+        // Load trending movies
+        async function loadTrending() {
+            try {
+                const res = await fetch('/api/movies/popular?page=1');
+                const data = await res.json();
+                const grid = document.getElementById('trendingGrid');
+                grid.innerHTML = '';
+
+                data.results.slice(0, 10).forEach(movie => {
+                    const card = document.createElement('div');
+                    card.className = 'trending-card';
+                    card.innerHTML = `
+                        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/FFD700?text=${encodeURIComponent(movie.title)}'">
+                        <div class="trending-overlay">
+                            <h4>${movie.title}</h4>
+                            <span>⭐ ${movie.vote_average?.toFixed(1)}</span>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => {
+                        window.location.href = `clicked_movie.html?id=${movie.id}`;
+                    });
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('trendingGrid').innerHTML = '<p style="color: var(--light-gray); text-align:center; grid-column: 1/-1;">Unable to load trending content. Please try again later.</p>';
+            }
+        }
+
+        loadTrending();
+
+        // Newsletter form
+        document.getElementById('newsletterForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'Subscribed! ✓';
+            btn.style.background = '#27ae60';
+            setTimeout(() => {
+                btn.textContent = 'Subscribe';
+                btn.style.background = '';
+                e.target.reset();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

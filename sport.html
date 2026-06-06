@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoufHub — Live Scores | Sports</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #24d39e;
+      --secondary: #06b6d4;
+      --dark: #0a0c15;
+      --card-bg: rgba(18, 22, 35, 0.9);
+      --text: #ffffff;
+      --text-muted: #a0a8c0;
+      --live-red: #ff4757;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0a0c15 0%, #0d2a1f 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: rgba(10, 12, 21, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.3s;
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--primary);
+      background: rgba(36, 211, 158, 0.1);
+    }
+
+    /* Sports Tabs */
+    .sports-tabs {
+      max-width: 1400px;
+      margin: 30px auto 20px;
+      padding: 0 32px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      overflow-x: auto;
+    }
+
+    .sport-tab {
+      padding: 12px 28px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 40px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .sport-tab.active, .sport-tab:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Live Score Board */
+    .live-banner {
+      background: linear-gradient(135deg, #ff4757, #ff6b6b);
+      padding: 12px 32px;
+      text-align: center;
+      font-weight: 700;
+      animation: livePulse 1s infinite;
+    }
+
+    /* Matches Grid */
+    .matches-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .league-section {
+      margin-bottom: 40px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .league-title {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 16px 0;
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .match-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      transition: all 0.3s;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .match-card:hover {
+      transform: translateX(5px);
+      border-color: var(--primary);
+    }
+
+    .team {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 200px;
+    }
+
+    .team-icon {
+      font-size: 32px;
+    }
+
+    .team-name {
+      font-weight: 600;
+    }
+
+    .score {
+      font-size: 28px;
+      font-weight: 800;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .live-badge {
+      background: var(--live-red);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      animation: livePulse 1s infinite;
+    }
+
+    .match-time {
+      color: var(--text-muted);
+      font-size: 13px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* Standings Table */
+    .standings-section {
+      margin-top: 40px;
+    }
+
+    .standings-table {
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border-collapse: collapse;
+    }
+
+    .standings-table th,
+    .standings-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .standings-table th {
+      background: rgba(36, 211, 158, 0.2);
+      color: var(--primary);
+    }
+
+    /* Load More */
+    .load-more-container {
+      text-align: center;
+      margin: 50px 0;
+    }
+
+    .load-more-btn {
+      padding: 14px 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .load-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(36, 211, 158, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .match-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .team {
+        justify-content: center;
+      }
+      
+      .standings-table {
+        font-size: 12px;
+      }
+      
+      .standings-table th,
+      .standings-table td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🏆 LoufHub Sports</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="movie.html">Movies</a>
+        <a href="music.html">Music</a>
+        <a href="sport.html" class="active">Sports</a>
+        <a href="ai.html">AI Studio</a>
+        <a href="login.html">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="live-banner">
+    🔴 LIVE SCORES • UPDATED IN REAL TIME • FOLLOW YOUR FAVORITE TEAMS
+  </div>
+
+  <div class="sports-tabs">
+    <button class="sport-tab active" onclick="loadSport('football')">⚽ Football</button>
+    <button class="sport-tab" onclick="loadSport('basketball')">🏀 Basketball</button>
+    <button class="sport-tab" onclick="loadSport('tennis')">🎾 Tennis</button>
+    <button class="sport-tab" onclick="loadSport('cricket')">🏏 Cricket</button>
+    <button class="sport-tab" onclick="loadSport('rugby')">🏉 Rugby</button>
+  </div>
+
+  <div class="matches-container" id="matchesContainer">
+    <div class="loading">Loading live scores...</div>
+  </div>
+
+  <div class="load-more-container">
+    <button class="load-more-btn" onclick="loadMoreMatches()">Load More Matches 📊</button>
+  </div>
+
+  <script>
+    let currentSport = 'football';
+    let currentPage = 1;
+    let allMatches = [];
+
+    // Comprehensive sports data
+    const sportsData = {
+      football: {
+        leagues: ['Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'Ligue 1'],
+        matches: [
+          { home: "Manchester City", away: "Liverpool", homeScore: 2, awayScore: 2, status: "LIVE", time: "65'", homeIcon: "🔵", awayIcon: "🔴" },
+          { home: "Arsenal", away: "Chelsea", homeScore: 3, awayScore: 1, status: "FT", time: "Full Time", homeIcon: "🔴", awayIcon: "🔵" },
+          { home: "Real Madrid", away: "Barcelona", homeScore: 1, awayScore: 1, status: "LIVE", time: "52'", homeIcon: "⚪", awayIcon: "🔴" },
+          { home: "Bayern Munich", away: "Borussia Dortmund", homeScore: 0, awayScore: 0, status: "UPCOMING", time: "20:45", homeIcon: "🔴", awayIcon: "🟡" },
+          { home: "PSG", away: "Marseille", homeScore: 2, awayScore: 0, status: "FT", time: "Full Time", homeIcon: "🔴", awayIcon: "🔵" }
+        ],
+        standings: [
+          { pos: 1, team: "Manchester City", played: 28, won: 20, drawn: 5, lost: 3, points: 65 },
+          { pos: 2, team: "Liverpool", played: 28, won: 19, drawn: 7, lost: 2, points: 64 },
+          { pos: 3, team: "Arsenal", played: 27, won: 19, drawn: 4, lost: 4, points: 61 },
+          { pos: 4, team: "Aston Villa", played: 28, won: 17, drawn: 4, lost: 7, points: 55 }
+        ]
+      },
+      basketball: {
+        leagues: ['NBA', 'EuroLeague'],
+        matches: [
+          { home: "LA Lakers", away: "Golden State Warriors", homeScore: 118, awayScore: 112, status: "FT", time: "Final", homeIcon: "💜", awayIcon: "💛" },
+          { home: "Boston Celtics", away: "Miami Heat", homeScore: 95, awayScore: 89, status: "LIVE", time: "4th Qtr", homeIcon: "🍀", awayIcon: "🔥" },
+          { home: "Milwaukee Bucks", away: "Phoenix Suns", homeScore: 0, awayScore: 0, status: "UPCOMING", time: "03:00", homeIcon: "🦌", awayIcon: "☀️" }
+        ],
+        standings: [
+          { pos: 1, team: "Boston Celtics", played: 62, won: 48, lost: 14, points: "48-14" },
+          { pos: 2, team: "Milwaukee Bucks", played: 61, won: 41, lost: 20, points: "41-20" },
+          { pos: 3, team: "Philadelphia 76ers", played: 61, won: 37, lost: 24, points: "37-24" }
+        ]
+      },
+      tennis: {
+        leagues: ['ATP Tour', 'WTA Tour'],
+        matches: [
+          { home: "Novak Djokovic", away: "Carlos Alcaraz", homeScore: 2, awayScore: 1, status: "LIVE", time: "3rd Set", homeIcon: "🎾", awayIcon: "🎾" },
+          { home: "Jannik Sinner", away: "Daniil Medvedev", homeScore: 2, awayScore: 0, status: "FT", time: "Final", homeIcon: "🎾", awayIcon: "🎾" }
+        ],
+        standings: [
+          { pos: 1, team: "Novak Djokovic", played: 12, points: 9850 },
+          { pos: 2, team: "Carlos Alcaraz", played: 10, points: 8800 },
+          { pos: 3, team: "Jannik Sinner", played: 11, points: 7500 }
+        ]
+      },
+      cricket: {
+        leagues: ['IPL', 'World Cup'],
+        matches: [
+          { home: "Mumbai Indians", away: "Chennai Super Kings", homeScore: 185, awayScore: 189, status: "FT", time: "Chennai won by 4 wkts", homeIcon: "🔵", awayIcon: "💛" },
+          { home: "Royal Challengers", away: "Kolkata Knight Riders", homeScore: 0, awayScore: 0, status: "UPCOMING", time: "14:00", homeIcon: "🔴", awayIcon: "🟣" }
+        ],
+        standings: [
+          { pos: 1, team: "Chennai Super Kings", played: 5, won: 4, lost: 1, points: 8 },
+          { pos: 2, team: "Mumbai Indians", played: 5, won: 3, lost: 2, points: 6 }
+        ]
+      },
+      rugby: {
+        leagues: ['Six Nations', 'Super Rugby'],
+        matches: [
+          { home: "England", away: "France", homeScore: 24, awayScore: 24, status: "FT", time: "Draw", homeIcon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", awayIcon: "🇫🇷" },
+          { home: "Ireland", away: "Scotland", homeScore: 0, awayScore: 0, status: "UPCOMING", time: "15:00", homeIcon: "🇮🇪", awayIcon: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" }
+        ],
+        standings: [
+          { pos: 1, team: "Ireland", played: 4, won: 4, lost: 0, points: 20 },
+          { pos: 2, team: "England", played: 4, won: 3, lost: 1, points: 15 }
+        ]
+      }
+    };
+
+    function loadSport(sport) {
+      currentSport = sport;
+      currentPage = 1;
+      
+      document.querySelectorAll('.sport-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.toLowerCase().includes(sport)) {
+          tab.classList.add('active');
+        }
+      });
+      
+      displaySportData();
+    }
+
+    function displaySportData() {
+      const data = sportsData[currentSport];
+      if (!data) return;
+      
+      const container = document.getElementById('matchesContainer');
+      
+      let matchesHtml = '';
+      
+      // Display matches by league
+      data.leagues.forEach((league, leagueIndex) => {
+        const leagueMatches = data.matches.slice(leagueIndex * 3, (leagueIndex + 1) * 3);
+        if (leagueMatches.length > 0) {
+          matchesHtml += `
+            <div class="league-section">
+              <div class="league-title">
+                <span>🏆</span> ${league}
+              </div>
+          `;
+          
+          leagueMatches.forEach(match => {
+            const statusClass = match.status === 'LIVE' ? 'live-badge' : '';
+            matchesHtml += `
+              <div class="match-card">
+                <div class="team">
+                  <span class="team-icon">${match.homeIcon}</span>
+                  <span class="team-name">${match.home}</span>
+                </div>
+                <div class="score">${match.homeScore} - ${match.awayScore}</div>
+                <div class="team">
+                  <span class="team-name">${match.away}</span>
+                  <span class="team-icon">${match.awayIcon}</span>
+                </div>
+                <div class="match-time">
+                  ${match.status === 'LIVE' ? `<span class="live-badge">🔴 LIVE ${match.time}</span>` : match.status === 'FT' ? `✓ ${match.time}` : `⏰ ${match.time}`}
+                </div>
+              </div>
+            `;
+          });
+          
+          matchesHtml += `</div>`;
+        }
+      });
+      
+      // Add standings
+      matchesHtml += `
+        <div class="standings-section">
+          <div class="league-title">
+            <span>📊</span> League Standings
+          </div>
+          <table class="standings-table">
+            <thead>
+              <tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D/L</th><th>Pts</th></tr>
+            </thead>
+            <tbody>
+              ${data.standings.map(team => `
+                <tr>
+                  <td>${team.pos}</td>
+                  <td><strong>${team.team}</strong></td>
+                  <td>${team.played || '-'}</td>
+                  <td>${team.won || team.wins || '-'}</td>
+                  <td>${team.drawn ? team.drawn + '/' + team.lost : (team.lost || '-')}</td>
+                  <td><strong style="color:var(--primary)">${team.points || team.pts || '-'}</strong></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      container.innerHTML = matchesHtml;
+    }
+
+    function loadMoreMatches() {
+      alert('📊 Loading more matches...\n\nMore fixtures and results will appear here!');
+      // Simulate loading more
+      currentPage++;
+    }
+
+    // Auto-refresh live scores every 30 seconds
+    setInterval(() => {
+      if (currentSport === 'football') {
+        // Simulate score updates
+        const liveMatches = document.querySelectorAll('.live-badge');
+        if (liveMatches.length > 0) {
+          console.log('Refreshing live scores...');
+        }
+      }
+    }, 30000);
+
+    // Initialize
+    loadSport('football');
+  </script>
+</body>
+</html>

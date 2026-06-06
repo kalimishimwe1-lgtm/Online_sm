@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio - LoufHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #FFD700; --yellow: #FFE44D; --dark-gold: #DAA520;
+            --black-deep: #0a0a0a; --black-dark: #111111; --black-soft: #1a1a1a;
+            --white: #ffffff; --gray: #cccccc; --light-gray: #a0a8c0;
+            --gold-gradient: linear-gradient(135deg, #FFD700, #DAA520, #FFE44D);
+            --glass-bg: rgba(26, 26, 26, 0.7); --glass-border: rgba(255, 215, 0, 0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ::selection { background: var(--gold); color: var(--black-deep); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--black-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--dark-gold); border-radius: 4px; }
+        body { font-family: 'Inter', sans-serif; background: var(--black-deep); color: var(--white); overflow-x: hidden; }
+
+        .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(10,10,10,0.85); border-bottom: 1px solid var(--glass-border); }
+        .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+        .logo span { -webkit-text-fill-color: var(--white); font-weight: 300; }
+        .nav-links { display: flex; gap: 30px; align-items: center; list-style: none; }
+        .nav-links a { color: var(--gray); text-decoration: none; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+        .nav-btn { padding: 10px 24px; background: var(--gold-gradient); color: var(--black-deep); border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .mobile-toggle { display: none; background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer; }
+
+        .chat-container { max-width: 900px; margin: 80px auto 0; padding: 20px; display: flex; flex-direction: column; height: calc(100vh - 80px); }
+
+        .chat-header { text-align: center; padding: 30px 20px; border-bottom: 1px solid var(--glass-border); }
+        .chat-header .ai-avatar { width: 64px; height: 64px; background: var(--gold-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px; }
+        .chat-header h2 { font-family: 'Playfair Display', serif; font-size: 24px; }
+        .chat-header p { color: var(--light-gray); font-size: 14px; }
+
+        .quick-suggestions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 16px 0; border-bottom: 1px solid var(--glass-border); }
+        .quick-btn { padding: 8px 16px; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 50px; color: var(--gold); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .quick-btn:hover { background: var(--gold); color: var(--black-deep); }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 16px; }
+
+        .message { display: flex; gap: 12px; max-width: 80%; animation: msgIn 0.3s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message.ai { align-self: flex-start; }
+
+        .msg-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .message.ai .msg-avatar { background: rgba(255,215,0,0.15); color: var(--gold); }
+        .message.user .msg-avatar { background: rgba(255,255,255,0.1); color: var(--white); }
+
+        .msg-bubble { padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.7; }
+        .message.ai .msg-bubble { background: rgba(255,255,255,0.05);height:900px;backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-bottom-left-radius: 4px; color: var(--gray); }
+        .message.user .msg-bubble { background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(218,165,32,0.15)); border: 1px solid rgba(255,215,0,0.3); border-bottom-right-radius: 4px; color: var(--white); }
+
+        .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
+        .typing-indicator span { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: typing 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-8px); opacity: 1; } }
+
+        .chat-input-area { padding: 20px 0; border-top: 1px solid var(--glass-border); display: flex; gap: 12px; }
+        .chat-input { flex: 1; padding: 16px 20px; background: var(--black-soft); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--white); font-size: 15px; outline: none; transition: border-color 0.3s; }
+        .chat-input:focus { border-color: var(--gold); }
+        .chat-input::placeholder { color: var(--light-gray); }
+        .chat-send { padding: 16px 24px; background: var(--gold-gradient); color: var(--black-deep); border: none; border-radius: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .chat-send:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+
+        @media (max-width: 767px) {
+            .navbar { padding: 12px 20px; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,10,10,0.98); flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
+            .nav-links.active { display: flex; }
+            .mobile-toggle { display: block; z-index: 1001; }
+            .chat-container { padding: 10px; margin-top: 70px; }
+            .message { max-width: 90%; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Louf<span>Hub</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="movie.html">Movies</a></li>
+            <li><a href="music.html">Music</a></li>
+            <li><a href="sport.html">Sports</a></li>
+            <li><a href="ai.html" class="active">AI Studio</a></li>
+            <li><a href="login.html" class="nav-btn">Sign In</a></li>
+        </ul>
+        <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    
+
+        
+            <div class="message ai">
+                
+                
+            
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
+            <button class="chat-send" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+
+        document.getElementById('mobileToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        function addMessage(content, type) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            const icon = type === 'ai' ? 'fa-brain' : 'fa-user';
+            msg.innerHTML = `
+                <div class="msg-avatar"><i class="fas ${icon}"></i></div>
+                <div class="msg-bubble">${content}</div>
+            `;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const msg = document.createElement('div');
+            msg.className = 'message ai';
+            msg.id = 'typingMsg';
+            msg.innerHTML = `
+                <div class="msg-avatar"><i class="fas fa-brain"></i></div>
+                <div class="msg-bubble">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById('typingMsg');
+            if (typing) typing.remove();
+        }
+
+        function getAIResponse(query) {
+            const q = query.toLowerCase();
+
+            if (q.includes('movie') || q.includes('film') || q.includes('watch') || q.includes('cinema')) {
+                if (q.includes('sci-fi') || q.includes('science fiction')) {
+                    return '🚀 Great choice! Here are some must-watch sci-fi movies:<br><br>• <strong>Interstellar</strong> — Mind-bending space odyssey<br>• <strong>Blade Runner 2049</strong> — Stunning cyberpunk sequel<br>• <strong>Dune</strong> — Epic space opera<br>• <strong>Arrival</strong> — Intelligent alien contact story<br>• <strong>The Martian</strong> — Survival on Mars<br><br>Check out our <a href="movie.html" style="color: var(--gold);">Movies section</a> for more!';
+                }
+                if (q.includes('action')) {
+                    return '💥 Looking for action? Here are my top picks:<br><br>• <strong>John Wick 4</strong> — Non-stop action<br>• <strong>Top Gun: Maverick</strong> — High-flying thrills<br>• <strong>Extraction 2</strong> — Intense combat sequences<br>• <strong>Mad Max: Fury Road</strong> — Pure adrenaline<br>• <strong>Die Hard</strong> — Classic action<br><br>Visit our <a href="movie.html" style="color: var(--gold);">Movies page</a> for the full collection!';
+                }
+                return '🎬 Here are some great movie recommendations:<br><br>• <strong>Oppenheimer</strong> — Historical masterpiece<br>• <strong>Barbie</strong> — Surprisingly deep & fun<br>• <strong>Killers of the Flower Moon</strong> — Scorsese at his best<br>• <strong>Everything Everywhere All at Once</strong> — Multiverse madness<br>• <strong>The Batman</strong> — Dark & atmospheric<br><br>Browse more in our <a href="movie.html" style="color: var(--gold);">Movies section</a>!';
+            }
+
+            if (q.includes('music') || q.includes('song') || q.includes('artist') || q.includes('album')) {
+                if (q.includes('hip hop') || q.includes('rap')) {
+                    return '🎵 Hip Hop recommendations coming right up:<br><br>• <strong>Kendrick Lamar</strong> — Pulitzer Prize winner<br>• <strong>Drake</strong> — Chart dominator<br>• <strong>J. Cole</strong> — Lyrical genius<br>• <strong>Travis Scott</strong> — Innovative sound<br>• <strong>Nas</strong> — Hip hop legend<br><br>Explore more in our <a href="music.html" style="color: var(--gold);">Music section</a>!';
+                }
+                return '🎵 Here are some music recommendations:<br><br>• <strong>The Weeknd</strong> — Smooth R&B/Pop<br>• <strong>Taylor Swift</strong> — Pop superstar<br>• <strong>Burna Boy</strong> — Afrobeats king<br>• <strong>Bad Bunny</strong> — Latin trap<br>• <strong>Dua Lipa</strong> — Dance pop<br><br>Discover more in our <a href="music.html" style="color: var(--gold);">Music section</a>!';
+            }
+
+            if (q.includes('sport') || q.includes('football') || q.includes('soccer') || q.includes('league') || q.includes('premier') || q.includes('score') || q.includes('standings')) {
+                return '⚽ Sports update! Here\'s what\'s happening:<br><br>• <strong>Premier League</strong> — Tight race at the top<br>• <strong>Champions League</strong> — Knockout stage excitement<br>• <strong>La Liga</strong> — Title race heating up<br>• <strong>Bundesliga</strong> — Bayern leading the charge<br>• <strong>Serie A</strong> — Inter dominant<br><br>Get live scores and standings on our <a href="sport.html" style="color: var(--gold);">Sports page</a>!';
+            }
+
+            if (q.includes('trending') || q.includes('popular') || q.includes('hot') || q.includes('best')) {
+                return '🔥 Here\'s what\'s trending right now:<br><br>🎬 <strong>Movies:</strong> Oppenheimer, Dune Part 2, Godzilla x Kong<br>🎵 <strong>Music:</strong> New albums from Drake, Taylor Swift, SZA<br>⚽ <strong>Sports:</strong> Champions League quarterfinals, NBA playoffs<br>📱 <strong>Streaming:</strong> New shows dropping every week<br><br>Explore each section for full details!';
+            }
+
+            if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('sup')) {
+                return '👋 Hey there! Welcome to LoufHub AI Studio! How can I help you today? I can recommend movies, suggest music, give sports updates, or answer any entertainment questions!';
+            }
+
+            if (q.includes('thank')) {
+                return '😊 You\'re welcome! Feel free to ask me anything else about movies, music, sports, or entertainment. I\'m here to help!';
+            }
+
+            return '🤔 Interesting question! While I specialize in entertainment, let me try to help. For the best experience, try asking about:<br><br>🎬 Movies — "Best action movies"<br>🎵 Music — "Recommend some jazz"<br>⚽ Sports — "Premier League standings"<br>🔥 Trending — "What\'s popular now"<br><br>Or explore our <a href="index.html" style="color: var(--gold);">homepage</a> for all content!';
+        }
+
+        function sendMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            addMessage(msg, 'user');
+            chatInput.value = '';
+            showTyping();
+
+            setTimeout(() => {
+                removeTyping();
+                addMessage(getAIResponse(msg), 'ai');
+            }, 1000 + Math.random() * 1500);
+        }
+
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                chatInput.value = btn.dataset.q;
+                sendMessage();
+            });
+        });
+    </script>
+</body>
+</html>
